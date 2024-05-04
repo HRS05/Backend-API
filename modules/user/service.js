@@ -51,9 +51,11 @@ const userService = {
       }
     );
     // save user token
-    let response = {};
-    response.token = token;
-    return { result: "logged IN", data: response };
+    let response = {
+        user,
+        token
+    };
+    return response;
   },
 };
 
