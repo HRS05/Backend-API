@@ -15,12 +15,8 @@ const userService = {
     user.type = type;
 
     user.password = await bcrypt.hash(user.password, 10);
-    try {
-      savedUser = await user.save();
-    } catch (e) {
-      throw new Error("adding user error -->  " + e);
-    }
-
+    savedUser = await user.save();
+    
     const token = jwt.sign(
       { user_id: savedUser._id, email, type: user.type },
       process.env.TOKEN_KEY,
@@ -31,7 +27,7 @@ const userService = {
     // save user token
     let response = {};
     response.token = token;
-    return { result: "User created ", data: response };
+    return { result: `${type} registred successfully.`, data: response };
   },
 
   loginUserUtil: async (data) => {

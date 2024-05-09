@@ -6,7 +6,7 @@ const register = Joi.object({
     contactNumber: Joi.string().required(),
     email: Joi.string().required(),
     age: Joi.number().optional(),
-	gender: Joi.string().allow("M", "F").required(),
+	gender: Joi.string().allow("M", "F").optional(),
     gst: Joi.string().optional(),
     bankName: Joi.string().optional(),
     ifscCode: Joi.string().optional(),
