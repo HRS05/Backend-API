@@ -10,7 +10,7 @@ const execute = (func) => {
       return res.status(200).send({status: 200, data: result});
     } catch (e) {
         Logger.error(e.message);
-      return res.status(400).send(e.message);
+      return res.status(400).send({status: 400, error: e.message});
     }
   };
 };

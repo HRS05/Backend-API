@@ -7,10 +7,9 @@ var chatSchema = new mongoose.Schema(
   {
     userId: String,
     expertId: String,
-    sender: String, // ethier userId or expertId
+    senderId: String, // ethier userId or expertId
     message: String,
     url: String,
-    type: String,
   },
   { timestamps: true }
 );

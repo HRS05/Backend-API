@@ -11,11 +11,17 @@ const TYPE = {
 var userSchema = new mongoose.Schema(
   {
     name: String,
+    contactNumber: { type: String, unique: true },
+    email: { type: String, unique: true },
     gender: String,
     age: Number,
     type: String,
-    contactNumber: { type: String, unique: true },
-    emailId: { type: String, unique: true },
+    gst: String,
+    bankName: String,
+    ifscCode: String,
+    bankAccountNumber: String,
+    location: String,
+    checkUrl: String,
     password: String,
   },
   { timestamps: true }

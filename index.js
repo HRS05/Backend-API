@@ -4,6 +4,8 @@ var http = require("http");
 const server = http.createServer(app);
 const bodyParser = require("body-parser");
 const routes = require('./routes');
+const cors = require('cors');
+const { corsConfig } = require('./constant/index')
 
 require("dotenv").config();
 
@@ -20,6 +22,12 @@ server.listen(portNumber, async function () {
   console.log("Server is running on " + portNumber);
   await DBManager.connect();
   await RedisManager.connect();
+  app.use(
+    cors({
+        methods: corsConfig.ALLOWED_REQUEST_TYPES,
+        allowedHeaders: corsConfig.ALLOWED_HEADERS,
+    }),
+);
   app.use(bodyParser.json());
   app.use('/api/v1', routes);
   // app.use(useClickhouse);
