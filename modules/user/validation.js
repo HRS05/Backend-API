@@ -20,10 +20,30 @@ const login = Joi.object({
     password: Joi.string().required(),
 });
 
+const sendOTPEmail = Joi.object({
+    email: Joi.string().required(),
+});
 
+const sendOTPPhone = Joi.object({
+    phone: Joi.string().required(),
+});
+
+const verifyOTPEmail = Joi.object({
+    email: Joi.string().required(),
+    otp: Joi.string().required(),
+});
+
+const verifyOTPPhone = Joi.object({
+    phone: Joi.string().required(),
+    otp: Joi.string().required(),
+});
 
 
 module.exports = {
     register,
-    login
+    login,
+    sendOTPEmail,
+    sendOTPPhone,
+    verifyOTPEmail,
+    verifyOTPPhone
 };

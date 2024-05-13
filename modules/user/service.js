@@ -3,6 +3,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const { TYPE } = require('./constant');
+const { generateOTP } = require("../../utils/common");
+const sendMail = require('../../utils/notification/email/send');
+const { RedisCacheKey } = require("../../connection/redis");
+
 require("dotenv").config();
 
 const userService = {
@@ -65,6 +69,52 @@ const userService = {
     };
     return response;
   },
+
+  sendOTPOnMail: async (data) => {
+    const { email } = data;
+    const user = await userDetailsModel.findOne({ email });
+
+    if (!isUndefinedOrNull(user)) {
+      throw new Error("Email Id already registred " + email);
+    }
+    
+    const otp = generateOTP();
+
+    sendMail({
+        otp, email
+    })
+
+    await RedisCacheKey.setValueForTime(`email:verify:${email}`, otp);
+
+    let response = {
+        message: 'OTP sent successfully'
+    };
+    return response;
+  },
+
+  verifyOTPforMail: async (data) => {
+    const { email, otp } = data;
+    const user = await userDetailsModel.findOne({ email });
+
+    if (!isUndefinedOrNull(user)) {
+      throw new Error("Email Id already registred " + email);
+    }
+
+    const savedOTP = await RedisCacheKey.getValue(`email:verify:${email}`);
+
+    if (otp != savedOTP) {
+        throw new Error("Invalid OTP for mail id: " + email);
+    }
+
+    RedisCacheKey.deleteKey(`email:verify:${email}`);
+
+    let response = {
+        message: 'OTP verified successfully'
+    };
+    return response;
+  },
+
+
 };
 
 module.exports = userService;
