@@ -13,6 +13,8 @@ const register = Joi.object({
     bankAccountNumber: Joi.string().optional(),
     location: Joi.string().required(),
     password: Joi.string().required(),
+    linkedinUrl: Joi.string().optional(),
+    twitterUrl: Joi.string().optional(),
 });
 
 const login = Joi.object({

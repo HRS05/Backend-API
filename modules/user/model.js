@@ -21,6 +21,8 @@ var userSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: 'false' },
     info: String,
     gst: String,
+    linkedinUrl: String,
+    twitterUrl: String,
     bankName: String,
     ifscCode: String,
     bankAccountNumber: String,
