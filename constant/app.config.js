@@ -1,5 +1,5 @@
 module.exports = {
-    APP_SESSION_SECRET: 'earnizy',
+    ALLOWED_ORIGIN: '*',
 
     ALLOWED_REQUEST_TYPES: [
         'POST', 'GET', 'PUT', 'DELETE', 'PATCH',

@@ -24,6 +24,7 @@ server.listen(portNumber, async function () {
   await RedisManager.connect();
   app.use(
     cors({
+        origin: corsConfig.ALLOWED_ORIGIN,
         methods: corsConfig.ALLOWED_REQUEST_TYPES,
         allowedHeaders: corsConfig.ALLOWED_HEADERS,
     }),
