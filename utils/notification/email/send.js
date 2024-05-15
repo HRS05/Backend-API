@@ -19,8 +19,8 @@ const sendMail = (data) => {
     apiInstance.sendTransacEmail(sendSmtpEmail).then((res) => {
         console.log(`API called successfully. Returned data: ${JSON.stringify(res)}`);
     }, (error) => {
-        throw new Error(`Email sending got failed`);
         console.error(error);
+        throw new Error(`Email sending got failed`);
     });
 };
 
