@@ -12,9 +12,9 @@ require("dotenv").config();
 const userService = {
   registerUserUtil: async (data) => {
     const { name, gender, contactNumber, email, password, type, age, gst, bankName, ifscCode, bankAccountNumber, location, linkedinUrl, twitterUrl } = data;
-    if (type == TYPE.EXPERT && isUndefinedOrNull(gst) && isUndefinedOrNull(bankName) && isUndefinedOrNull(ifscCode) && isUndefinedOrNull(bankAccountNumber)) {
-        throw new Error('details missing from [ gst, bank name, ifsc code, account number ]');
-    } 
+    // if (type == TYPE.EXPERT && isUndefinedOrNull(gst) && isUndefinedOrNull(bankName) && isUndefinedOrNull(ifscCode) && isUndefinedOrNull(bankAccountNumber)) {
+    //     throw new Error('details missing from [ gst, bank name, ifsc code, account number ]');
+    // } 
     let user = new userDetailsModel();
     user.name = name;
     if (!isUndefinedOrNull(gender)) user.gender = gender;
