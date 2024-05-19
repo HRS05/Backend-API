@@ -19,6 +19,7 @@ var userSchema = new mongoose.Schema(
     age: Number,
     type: String,
     isVerified: { type: Boolean, default: 'false' },
+    profileUrl: String,
     info: String,
     gst: String,
     linkedinUrl: String,

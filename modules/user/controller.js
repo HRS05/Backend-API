@@ -5,13 +5,13 @@ const userController = {
 
   registerUser: async (req, res) => {
     const data = validateInfo(validate.register, req.body);
-    r = await userService.registerUserUtil(data);
+    r = await userService.registerUser(data);
     return r;
   },
 
   loginUser: async (req, res) => {
     const data = validateInfo(validate.login, req.body);
-    r = await userService.loginUserUtil(data);
+    r = await userService.loginUser(data);
     return r;
   },
 
@@ -24,6 +24,12 @@ const userController = {
   verifyOTPEmail: async (req, res) => {
     const data = validateInfo(validate.verifyOTPEmail, req.body);
     r = await userService.verifyOTPforMail(data);
+    return r;
+  },
+
+  updateProfile: async (req, res) => {
+    const data = validateInfo(validate.updateProfile, req.body);
+    r = await userService.updateProfile({ data, files: req.files, reqBy: req.user });
     return r;
   },
 };

@@ -17,6 +17,21 @@ const register = Joi.object({
     twitterUrl: Joi.string().optional(),
 });
 
+const updateProfile = Joi.object({
+	name: Joi.string().required(),
+    age: Joi.number().optional(),
+	gender: Joi.string().allow("M", "F").optional(),
+    gst: Joi.string().optional(),
+    bankName: Joi.string().optional(),
+    ifscCode: Joi.string().optional(),
+    bankAccountNumber: Joi.string().optional(),
+    location: Joi.string().required(),
+    password: Joi.string().required(),
+    linkedinUrl: Joi.string().optional(),
+    twitterUrl: Joi.string().optional(),
+    profileUrl: Joi.string().optional(),
+});
+
 const login = Joi.object({
     email: Joi.string().required(),
     password: Joi.string().required(),
@@ -47,5 +62,6 @@ module.exports = {
     sendOTPEmail,
     sendOTPPhone,
     verifyOTPEmail,
-    verifyOTPPhone
+    verifyOTPPhone,
+    updateProfile
 };

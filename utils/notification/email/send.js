@@ -15,7 +15,6 @@ const sendMail = (data) => {
     sendSmtpEmail.htmlContent = body;
     sendSmtpEmail.sender = { name: 'Harsh Sharma', email: 'harshjmhr@gmail.com' };
     sendSmtpEmail.to = [{ email: email }];
-    console.log(key);
     apiInstance.sendTransacEmail(sendSmtpEmail).then((res) => {
         console.log(`API called successfully. Returned data: ${JSON.stringify(res)}`);
     }, (error) => {
