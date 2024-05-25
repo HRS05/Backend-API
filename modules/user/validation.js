@@ -30,6 +30,13 @@ const updateProfile = Joi.object({
     linkedinUrl: Joi.string().optional(),
     twitterUrl: Joi.string().optional(),
     profileUrl: Joi.string().optional(),
+    category: Joi.array().items(Joi.string()).required(),
+});
+
+const getExperts = Joi.object({
+	category: Joi.array().items(Joi.string()).required(),
+    limit: Joi.number().integer().min(1).max(20).optional(), 
+    page: Joi.number().integer().min(0).optional(),
 });
 
 const login = Joi.object({
@@ -63,5 +70,6 @@ module.exports = {
     sendOTPPhone,
     verifyOTPEmail,
     verifyOTPPhone,
-    updateProfile
+    updateProfile,
+    getExperts
 };

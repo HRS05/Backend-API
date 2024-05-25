@@ -20,6 +20,7 @@ var userSchema = new mongoose.Schema(
     type: String,
     isVerified: { type: Boolean, default: 'false' },
     profileUrl: String,
+    category: { type: [String] },
     info: String,
     gst: String,
     linkedinUrl: String,

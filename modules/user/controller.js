@@ -1,8 +1,7 @@
 const userService = require("./service");
 const validate = require("./validation");
-const { validateInfo } = require("../../middleware/index")
+const { validateInfo } = require("../../middleware/index");
 const userController = {
-
   registerUser: async (req, res) => {
     const data = validateInfo(validate.register, req.body);
     r = await userService.registerUser(data);
@@ -29,7 +28,17 @@ const userController = {
 
   updateProfile: async (req, res) => {
     const data = validateInfo(validate.updateProfile, req.body);
-    r = await userService.updateProfile({ data, files: req.files, reqBy: req.user });
+    r = await userService.updateProfile({
+      data,
+      files: req.files,
+      reqBy: req.user,
+    });
+    return r;
+  },
+
+  getExperts: async (req, res) => {
+    const data = validateInfo(validate.getExperts, req.body);
+    r = await userService.getExperts({ data, reqBy: req.user });
     return r;
   },
 };

@@ -13,7 +13,22 @@ require("dotenv").config();
 
 const userService = {
   registerUser: async (data) => {
-    const { name, gender, contactNumber, email, password, type, age, gst, bankName, ifscCode, bankAccountNumber, location, linkedinUrl, twitterUrl } = data;
+    const {
+      name,
+      gender,
+      contactNumber,
+      email,
+      password,
+      type,
+      age,
+      gst,
+      bankName,
+      ifscCode,
+      bankAccountNumber,
+      location,
+      linkedinUrl,
+      twitterUrl,
+    } = data;
     // if (type == TYPE.EXPERT && isUndefinedOrNull(gst) && isUndefinedOrNull(bankName) && isUndefinedOrNull(ifscCode) && isUndefinedOrNull(bankAccountNumber)) {
     //     throw new Error('details missing from [ gst, bank name, ifsc code, account number ]');
     // }
@@ -36,15 +51,15 @@ const userService = {
     user.location = location;
 
     if (type == TYPE.EXPERT) {
-        user.gst = gst;
-        user.bankName = bankName;
-        user.ifscCode = ifscCode;
-        user.bankAccountNumber = bankAccountNumber;
+      user.gst = gst;
+      user.bankName = bankName;
+      user.ifscCode = ifscCode;
+      user.bankAccountNumber = bankAccountNumber;
     }
 
     user.password = await bcrypt.hash(user.password, 10);
     savedUser = await user.save();
-    
+
     const token = jwt.sign(
       { user_id: savedUser._id, email, type: user.type },
       process.env.TOKEN_KEY,
@@ -74,8 +89,8 @@ const userService = {
     );
     // save user token
     let response = {
-        user,
-        token
+      user,
+      token,
     };
     return response;
   },
@@ -87,17 +102,18 @@ const userService = {
     if (!isUndefinedOrNull(user)) {
       throw new Error("Email Id already registred " + email);
     }
-    
+
     const otp = generateOTP();
 
     sendMail({
-        otp, email
-    })
+      otp,
+      email,
+    });
 
     await RedisCacheKey.setValueForTime(`email:verify:${email}`, otp);
 
     let response = {
-        message: 'OTP sent successfully'
+      message: "OTP sent successfully",
     };
     return response;
   },
@@ -113,48 +129,106 @@ const userService = {
     const savedOTP = await RedisCacheKey.getValue(`email:verify:${email}`);
 
     if (otp != savedOTP) {
-        throw new Error("Invalid OTP for mail id: " + email);
+      throw new Error("Invalid OTP for mail id: " + email);
     }
 
     RedisCacheKey.deleteKey(`email:verify:${email}`);
 
     let response = {
-        message: 'OTP verified successfully'
+      message: "OTP verified successfully",
     };
     return response;
   },
 
-  updateProfile: async ({ data, files, reqBy}) => {
-    
+  updateProfile: async ({ data, files, reqBy }) => {
+    const {
+      name,
+      gender,
+      password,
+      age,
+      gst,
+      bankName,
+      ifscCode,
+      bankAccountNumber,
+      location,
+      linkedinUrl,
+      twitterUrl,
+      category
+    } = data;
 
-    const { name, gender, password, age, gst, bankName, ifscCode, bankAccountNumber, location, linkedinUrl, twitterUrl } = data;
-  
     let user = {};
     user.name = name;
     if (!isUndefinedOrNull(gender)) user.gender = gender;
+    if (!isUndefinedOrNull(category)) user.category = category;
     if (!isUndefinedOrNull(age)) user.age = age;
     if (!isUndefinedOrNull(linkedinUrl)) user.linkedinUrl = linkedinUrl;
     if (!isUndefinedOrNull(twitterUrl)) user.twitterUrl = twitterUrl;
-    if (!isUndefinedOrNull(files?.image[0])) {
-        user.profileUrl = await putObjectToBucket({ data: files.image[0], user: reqBy, type: s3ObjectDetails.TYPES.PROFILE });
+    if (!isUndefinedOrNull(files?.image) && !isUndefinedOrNull(files && files?.image[0])) {
+      user.profileUrl = await putObjectToBucket({
+        data: files.image[0],
+        user: reqBy,
+        type: s3ObjectDetails.TYPES.PROFILE,
+      });
     }
     user.password = password;
     user.location = location;
 
     if (reqBy.type == TYPE.EXPERT) {
-        user.gst = gst;
-        user.bankName = bankName;
-        user.ifscCode = ifscCode;
-        user.bankAccountNumber = bankAccountNumber;
+      user.gst = gst;
+      user.bankName = bankName;
+      user.ifscCode = ifscCode;
+      user.bankAccountNumber = bankAccountNumber;
     }
 
     if (user.password) user.password = await bcrypt.hash(user.password, 10);
-    const x = await userDetailsModel.updateOne({ _id: reqBy.user_id }, { ...user });
-    
+    const x = await userDetailsModel.updateOne(
+      { _id: reqBy.user_id },
+      { ...user }
+    );
+
     return { result: `${reqBy.type} updated successfully.` };
   },
 
+  getExperts: async ({ data, reqBy }) => {
+    const { category, page, limit } = data;
 
+    const currentPage = page ? page : 1;
+    const itemsPerPage = limit ? limit : 20
+
+    if (
+      isNaN(currentPage) ||
+      currentPage < 1 ||
+      isNaN(itemsPerPage) ||
+      itemsPerPage < 1
+    ) {
+      throw new Error("Invalid pagination parameters");
+    }
+
+    const skip = (currentPage - 1) * itemsPerPage;
+
+    const query = {
+      //category: { $in: category },
+      type: TYPE.EXPERT,
+    };
+
+    const experts = await userDetailsModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(itemsPerPage);
+
+    const total = await userDetailsModel.countDocuments(query);
+
+    const result = {
+      experts,
+      currentPage,
+      itemsPerPage,
+      total,
+      totalPages: Math.ceil(total / itemsPerPage),
+    };
+
+    return result;
+  },
 };
 
 module.exports = userService;
