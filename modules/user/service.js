@@ -207,7 +207,7 @@ const userService = {
     const skip = (currentPage - 1) * itemsPerPage;
 
     const query = {
-      //category: { $in: category },
+      category: { $all: category },
       type: TYPE.EXPERT,
     };
 
