@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 require("dotenv").config();
 
 const bucketName = process.env.BUCKET_NAME
@@ -29,6 +29,19 @@ const putObjectToBucket = async ({ data, user, type }) => {
     return keyName;
 }
 
+const deleteObjectFromBucket = async ({ user, type }) => {
+    const keyName = getName({ user, type });
+    const params = {
+        Bucket: bucketName,
+        Key: keyName
+    };
+
+    const command = new DeleteObjectCommand(params);
+    await s3.send(command);
+    return keyName;
+};
+
 module.exports = {
-    putObjectToBucket
+    putObjectToBucket,
+    deleteObjectFromBucket
 };

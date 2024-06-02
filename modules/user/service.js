@@ -38,6 +38,12 @@ const userService = {
       throw new Error("Email Id already registred " + email);
     }
 
+    user = await userDetailsModel.findOne({ contactNumber });
+
+    if (!isUndefinedOrNull(user)) {
+      throw new Error("Contact number already registred " + contactNumber);
+    }
+
     user = new userDetailsModel();
     user.name = name;
     if (!isUndefinedOrNull(gender)) user.gender = gender;
@@ -70,7 +76,7 @@ const userService = {
     // save user token
     let response = {};
     response.token = token;
-    return { result: `${type} registred successfully.`, data: response };
+    return { message: `${type} registred successfully.`, data: response };
   },
 
   loginUser: async (data) => {

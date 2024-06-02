@@ -5,7 +5,7 @@ const TYPES = {
 
 
 const getName = ({ user, type }) => {
-    return `${user.user_id}/${type}`;
+    return `${user.email}-${user.user_id}/${type}`;
 }
 
 module.exports = {
