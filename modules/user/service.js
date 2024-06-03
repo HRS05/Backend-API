@@ -217,9 +217,10 @@ const userService = {
     const skip = (currentPage - 1) * itemsPerPage;
 
     const query = {
-      category: { $all: category },
       type: TYPE.EXPERT,
     };
+
+    if (category.length > 0) query.category = { $all: category };
 
     const experts = await userDetailsModel
       .find(query)
