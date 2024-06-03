@@ -12,7 +12,4 @@ router.post("/send-otp-email", execute(userController.sendOTPEmail));
 router.post("/verify-otp-email", execute(userController.verifyOTPEmail));
 router.post("/get-experts", auth, accessAllowed(['user']), executor(userController.getExperts));
 
-
-
-
 module.exports = router;

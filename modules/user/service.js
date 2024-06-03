@@ -109,13 +109,17 @@ const userService = {
       throw new Error("Email Id already registred " + email);
     }
 
-    const otp = generateOTP();
+    let otp = '999999';
 
-    sendMail({
-      otp,
-      email,
-    });
+    if (process.env.ENABLE_MAILER_SERVICE == true) {
+        otp = generateOTP();
 
+        sendMail({
+            otp,
+            email,
+          });
+    }
+    
     await RedisCacheKey.setValueForTime(`email:verify:${email}`, otp);
 
     let response = {

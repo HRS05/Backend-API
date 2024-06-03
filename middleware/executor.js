@@ -12,6 +12,7 @@ const execute = (func) => {
         Logger.error(e.message);
       return res.status(400).send({status: 400, error: e.message});
     }
+    
   };
 };
 
