@@ -1,18 +1,24 @@
 const _ = require("lodash");
-const { Logger } = require('../logger');
-
+const { Logger } = require("../logger");
 
 const execute = (func) => {
   return async (req, res, next) => {
+    const startTime = Date.now();
+    const apiPath = req.path;
     try {
       const result = await func(req, res);
-      Logger.info("got called");
-      return res.status(200).send({status: 200, data: result});
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      Logger.info(`API ${apiPath} called and took ${duration}ms`);
+      return res.status(200).send({ status: 200, data: result });
     } catch (e) {
-        Logger.error(e.message);
-      return res.status(400).send({status: 400, error: e.message});
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      Logger.error(
+        `API ${apiPath} called and failed after ${duration}ms: ${e.message}`
+      );
+      return res.status(400).send({ status: 400, error: e.message });
     }
-    
   };
 };
 
