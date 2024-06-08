@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket Thing2</title>
+</head>
+<body>
+    Client2
+    <button onclick="sendMessage()">Send Msg</button>
+</body>
+<script>
+    // Create WebSocket connection.
+    const socket = new WebSocket('ws://localhost:3000');
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+        console.log('Connected to WS Server')
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        console.log('Message from server ', event.data);
+    });
+
+    const sendMessage = () => {
+        const data = {
+            type: 'identify',
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYzY2ZiMWFiNzliNGVmNTY0MDZjMzk5IiwiZW1haWwiOiJwcmF0aWtAZXhhbXBsZS5jb20iLCJ0eXBlIjoidXNlciIsImlhdCI6MTcxNzgzMDE2NiwiZXhwIjoxNzE3OTE2NTY2fQ.GLJUTJDYeqH3Vs03UgG4njfMUFp6ug_AYlyHwxMqEyI'
+        }
+        socket.send(JSON.stringify(data));    }
+</script>
+</html>
