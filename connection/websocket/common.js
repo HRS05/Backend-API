@@ -1,8 +1,40 @@
 const webSocket = require("ws");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-
+const { CALL_TYPE, SOCKET_CALL_TYPE } = require('./constant'); 
+const { isUndefinedOrNull } = require("../../utils/validators");
 let webSocketConnectionMap = {};
+
+
+const validateUser = async ({ data, ws }) => {
+  const token = data.token;
+  try {
+    const user = jwt.verify(token, process.env.TOKEN_KEY);
+    console.log(user);
+    ws.id = user.user_id; // Assign user ID to the WebSocket connection
+    webSocketConnectionMap[user.user_id] = ws; // Map the user ID to the WebSocket connection
+    ws.send("User identified successfully!");
+  } catch (err) {
+    ws.send("User not found!");
+  }
+};
+
+const makeCall = async ({ data, ws }) => {
+  const { peerId, toCall, callType } = data;
+  const userws = webSocketConnectionMap[toCall];
+  if (isUndefinedOrNull(userws)) {
+    // TODO: have to make notification entry
+    ws.send("User not found!");
+    return;
+  }
+  userws.send(
+    JSON.stringify({
+      peerId,
+      callBy: userws.id,
+      callType,
+    })
+  );
+}
 
 
 const makeSocketConnection = async (server) => {
@@ -17,28 +49,12 @@ const makeSocketConnection = async (server) => {
         try {
           const data = JSON.parse(message);
           console.log(data);
-          if (data.type === 'identify') {
-            // Assuming the message contains a type 'identify' and userId
-            const token = data.token;        
-            try {
-                const user = jwt.verify(token, process.env.TOKEN_KEY);
-                console.log(user);
-                ws.id = user.user_id; // Assign user ID to the WebSocket connection
-                webSocketConnectionMap[user.user_id] = ws; // Map the user ID to the WebSocket connection
-                ws.send('User identified successfully!');
-              } catch (err) {
-                ws.send('User not found!');
+            switch (data.type) {
+                case SOCKET_CALL_TYPE.IDENTIFY:
+                    await validateUser({ data, ws })
+                case SOCKET_CALL_TYPE.CALL:
+                    await makeCall({ data, ws })
             }
-          }
-          if (data.type === 'call') {
-            const { peerId, toCall, callType } = data;
-            const userws = webSocketConnectionMap[toCall];
-            userws.send(JSON.stringify({
-                peerId,
-                callBy: userws.id,
-                callType
-            }))
-          }
         } catch (error) {
           console.error('Error processing message:', error);
         }
