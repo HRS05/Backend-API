@@ -1,3 +1,5 @@
+const { string } = require("joi");
+
 const mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
@@ -31,6 +33,9 @@ var userSchema = new mongoose.Schema(
     location: String,
     checkUrl: String,
     password: String,
+    about: String,
+    experience: String,
+    language: { type: [String] },
   },
   { timestamps: true }
 );

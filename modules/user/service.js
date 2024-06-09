@@ -163,13 +163,19 @@ const userService = {
       location,
       linkedinUrl,
       twitterUrl,
-      category
+      category,
+      language,
+      about,
+      experience
     } = data;
 
     let user = {};
     user.name = name;
     if (!isUndefinedOrNull(gender)) user.gender = gender;
-    if (!isUndefinedOrNull(category)) user.category = category;
+    if (!isUndefinedOrNull(experience)) user.experience = experience;
+    if (!isUndefinedOrNull(category)) user.category = JSON.parse(category);
+    if (!isUndefinedOrNull(language)) user.language = JSON.parse(language);
+    if (!isUndefinedOrNull(about)) user.about = about;
     if (!isUndefinedOrNull(age)) user.age = age;
     if (!isUndefinedOrNull(linkedinUrl)) user.linkedinUrl = linkedinUrl;
     if (!isUndefinedOrNull(twitterUrl)) user.twitterUrl = twitterUrl;
