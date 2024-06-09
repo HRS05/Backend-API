@@ -41,5 +41,13 @@ const userController = {
     r = await userService.getExperts({ data, reqBy: req.user });
     return r;
   },
+
+  getExpert: async (req, res) => {
+    console.log(req.body);
+    const data = validateInfo(validate.getExpert, req.params);
+    r = await userService.getExpert({ data, reqBy: req.user });
+    return r;
+  },
+
 };
 module.exports = userController;

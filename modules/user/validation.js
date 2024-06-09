@@ -42,6 +42,10 @@ const getExperts = Joi.object({
     page: Joi.number().integer().min(0).optional(),
 });
 
+const getExpert = Joi.object({
+	id: Joi.string().required(),
+});
+
 const login = Joi.object({
     email: Joi.string().required(),
     password: Joi.string().required(),
@@ -74,5 +78,6 @@ module.exports = {
     verifyOTPEmail,
     verifyOTPPhone,
     updateProfile,
-    getExperts
+    getExperts,
+    getExpert
 };

@@ -246,6 +246,29 @@ const userService = {
 
     return result;
   },
+
+  getExpert: async ({ data, reqBy }) => {
+    const { id } = data;
+
+    const query = {
+      _id: id,
+      type: TYPE.EXPERT,
+    };
+
+
+    const expert = await userDetailsModel
+      .findOne(query);
+
+    if (isUndefinedOrNull(expert)) {
+        throw new Error(`No user exists with given id: ${id}`);
+    }  
+
+    const result = {
+      expert,
+    };
+
+    return result;
+  },
 };
 
 module.exports = userService;

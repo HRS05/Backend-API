@@ -11,5 +11,6 @@ router.post("/update-profile", auth, accessAllowed(['user', 'expert']), imageUpl
 router.post("/send-otp-email", execute(userController.sendOTPEmail));
 router.post("/verify-otp-email", execute(userController.verifyOTPEmail));
 router.post("/get-experts", auth, accessAllowed(['user']), executor(userController.getExperts));
+router.get("/get-expert/:id", auth, accessAllowed(['user']), executor(userController.getExpert));
 
 module.exports = router;
