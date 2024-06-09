@@ -1,13 +1,13 @@
 const webSocket = require("ws");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const { CALL_TYPE, SOCKET_CALL_TYPE } = require('./constant'); 
+const { CALL_TYPE, SOCKET_CALL_TYPE } = require("./constant");
 const { isUndefinedOrNull } = require("../../utils/validators");
+const url = require('url');
+
 let webSocketConnectionMap = {};
 
-
-const validateUser = async ({ data, ws }) => {
-  const token = data.token;
+const validateUser = ({ token, ws }) => {
   try {
     const user = jwt.verify(token, process.env.TOKEN_KEY);
     console.log(user);
@@ -15,8 +15,8 @@ const validateUser = async ({ data, ws }) => {
     webSocketConnectionMap[user.user_id] = ws; // Map the user ID to the WebSocket connection
     ws.send("User identified successfully!");
   } catch (err) {
-    ws.send("User not found!");
-  }
+    ws.close(1008, "Invalid token");
+}
 };
 
 const makeCall = async ({ data, ws }) => {
@@ -35,36 +35,39 @@ const makeCall = async ({ data, ws }) => {
       callType,
     })
   );
-}
-
+};
 
 const makeSocketConnection = async (server) => {
   try {
     //creating websocket server
     const wss = new webSocket.Server({ server });
-    wss.on("connection", function connection(ws) {
+    wss.on("connection", function connection(ws, req) {
       console.log("A new client Connected!");
       ws.send("Welcome New Client!");
 
-      ws.on('message', async function incoming(message) {
+      const parameters = url.parse(req.url, true).query;
+      const token = parameters.token;
+        console.log('token -> ', token);
+      validateUser({ token, ws });
+
+      ws.on("message", async function incoming(message) {
         try {
           const data = JSON.parse(message);
           console.log(data);
-            switch (data.type) {
-                case SOCKET_CALL_TYPE.IDENTIFY:
-                    await validateUser({ data, ws })
-                case SOCKET_CALL_TYPE.CALL:
-                    await makeCall({ data, ws })
-            }
+          switch (data.type) {
+            case SOCKET_CALL_TYPE.IDENTIFY:
+              await validateUser({ data, ws });
+            case SOCKET_CALL_TYPE.CALL:
+              await makeCall({ data, ws });
+          }
         } catch (error) {
-          console.error('Error processing message:', error);
+          console.error("Error processing message:", error);
         }
       });
 
-      ws.on('close', () => {
-        console.log('Client disconnected');
+      ws.on("close", () => {
+        console.log("Client disconnected");
       });
-
     });
   } catch (error) {
     //Logger.error(`Error while creating redis client ${JSON.stringify(error)}`);
@@ -72,8 +75,7 @@ const makeSocketConnection = async (server) => {
   }
 };
 
-
 module.exports = {
-    webSocketConnectionMap,
-    makeSocketConnection
+  webSocketConnectionMap,
+  makeSocketConnection,
 };

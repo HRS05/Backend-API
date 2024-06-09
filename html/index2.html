@@ -11,8 +11,9 @@
 </body>
 <script>
     // Create WebSocket connection.
-    const socket = new WebSocket('ws://43.204.96.242:3000');
-
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYzY2ZiMWFiNzliNGVmNTY0MDZjMzk5IiwiZW1haWwiOiJwcmF0aWtAZXhhbXBsZS5jb20iLCJ0eXBlIjoidXNlciIsImlhdCI6MTcxNzkyODAwNSwiZXhwIjoxNzE4MDE0NDA1fQ.fCuFTQam0rA4wEZUhQZMDWZkVqfXKpDMx_J-kkyQNk4"
+    const socket = new WebSocket(`ws://localhost:3000/socket?token=${token}`);
+    
     // Connection opened
     socket.addEventListener('open', function (event) {
         console.log('Connected to WS Server');
@@ -34,7 +35,7 @@
     const sendMessage = () => {
         const data = {
             type: 'identify',
-            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYzY2ZiMWFiNzliNGVmNTY0MDZjMzk5IiwiZW1haWwiOiJwcmF0aWtAZXhhbXBsZS5jb20iLCJ0eXBlIjoidXNlciIsImlhdCI6MTcxNzgzMDE2NiwiZXhwIjoxNzE3OTE2NTY2fQ.GLJUTJDYeqH3Vs03UgG4njfMUFp6ug_AYlyHwxMqEyI'
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjYzY2ZiMWFiNzliNGVmNTY0MDZjMzk5IiwiZW1haWwiOiJwcmF0aWtAZXhhbXBsZS5jb20iLCJ0eXBlIjoidXNlciIsImlhdCI6MTcxNzkyODAwNSwiZXhwIjoxNzE4MDE0NDA1fQ.fCuFTQam0rA4wEZUhQZMDWZkVqfXKpDMx_J-kkyQNk4'
         }
         socket.send(JSON.stringify(data));    }
 </script>
