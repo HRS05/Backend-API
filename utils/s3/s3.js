@@ -5,6 +5,8 @@ const bucketName = process.env.BUCKET_NAME
 const bucketRegion = process.env.BUCKET_REGION
 const bucketAccessKey = process.env.BUCKET_ACCESS_KEY
 const bucketSecretAccessKey = process.env.BUCKET_SECRET_ACCESS_KEY
+const bucketObjectDomain = process.env.BUCKET_OBJECT_DOMAIN
+
 const { getName } = require('./details');
 
 const s3 = new S3Client({
@@ -26,7 +28,7 @@ const putObjectToBucket = async ({ data, user, type }) => {
 
     const command = new PutObjectCommand(params);
     await s3.send(command);
-    return keyName;
+    return `${bucketObjectDomain}${keyName}`;
 }
 
 const deleteObjectFromBucket = async ({ user, type }) => {
