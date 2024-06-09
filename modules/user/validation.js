@@ -30,8 +30,8 @@ const updateProfile = Joi.object({
     linkedinUrl: Joi.string().optional(),
     twitterUrl: Joi.string().optional(),
     profileUrl: Joi.string().optional(),
-    category: Joi.array().optional(), //array
-    language: Joi.array().optional(), //array
+    category: Joi.string().optional(), //array
+    language: Joi.string().optional(), //array
     about: Joi.string().optional(),
     experience: Joi.string().optional(),
 });
