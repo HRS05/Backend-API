@@ -27,6 +27,7 @@ const makeCall = async ({ data, ws }) => {
     ws.send("User not found!");
     return;
   }
+  console.log(userws);
   userws.send(
     JSON.stringify({
       peerId,
@@ -59,6 +60,11 @@ const makeSocketConnection = async (server) => {
           console.error('Error processing message:', error);
         }
       });
+
+      ws.on('close', () => {
+        console.log('Client disconnected');
+      });
+
     });
   } catch (error) {
     //Logger.error(`Error while creating redis client ${JSON.stringify(error)}`);
