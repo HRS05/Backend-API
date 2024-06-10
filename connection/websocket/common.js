@@ -7,8 +7,8 @@ const url = require('url');
 
 let webSocketConnectionMap = {};
 
-const makeResponse = (data) => {
-    return JSON.stringify({data});
+const sendError = (data) => {
+    return JSON.stringify({error: data, type: SOCKET_CALL_TYPE.ERROR});
 }
 
 const validateUser = ({ token, ws }) => {
@@ -17,18 +17,18 @@ const validateUser = ({ token, ws }) => {
     console.log(user);
     ws.id = user.user_id; // Assign user ID to the WebSocket connection
     webSocketConnectionMap[user.user_id] = ws; // Map the user ID to the WebSocket connection
-    ws.send(makeResponse("User identified successfully!"));
+    ws.send(sendError("User identified successfully!"));
   } catch (err) {
     ws.close(1008, "Invalid token");
 }
 };
 
 const makeCall = async ({ data, ws }) => {
-  const { peerId, toCall, callType } = data;
+  const { peerId, toCall, callType, type } = data;
   const userws = webSocketConnectionMap[toCall];
   if (isUndefinedOrNull(userws)) {
     // TODO: have to make notification entry
-    ws.send(makeResponse("User not found!"));
+    ws.send(sendError("User not found!"));
     return;
   }
   console.log(userws);
@@ -37,22 +37,24 @@ const makeCall = async ({ data, ws }) => {
       peerId,
       callBy: ws.id,
       callType,
+      type
     })
   );
 };
 
 const callStatus = async ({ data, ws }) => {
-    const { status, toCall } = data;
+    const { status, toCall, type } = data;
     const userws = webSocketConnectionMap[toCall];
     if (isUndefinedOrNull(userws)) {
       // TODO: have to make notification entry
-      ws.send(makeResponse("User not found!"));
+      ws.send(sendError("User not found!"));
       return;
     }
     userws.send(
       JSON.stringify({
         status,
         callBy: ws.id,
+        type
       })
     );
   };

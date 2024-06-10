@@ -2,6 +2,7 @@ const SOCKET_CALL_TYPE = {
     IDENTIFY: 'identify',
     CALL: 'call',
     CALL_STATUS: 'call-status',
+    ERROR: 'error'
 }
 
 const CALL_TYPE = {
