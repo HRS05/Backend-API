@@ -3,13 +3,13 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { CALL_TYPE, SOCKET_CALL_TYPE } = require("./constant");
 const { isUndefinedOrNull } = require("../../utils/validators");
-const url = require('url');
+const url = require("url");
 
 let webSocketConnectionMap = {};
 
 const sendError = (data) => {
-    return JSON.stringify({error: data, type: SOCKET_CALL_TYPE.ERROR});
-}
+  return JSON.stringify({ error: data, type: SOCKET_CALL_TYPE.ERROR });
+};
 
 const validateUser = ({ token, ws }) => {
   try {
@@ -17,10 +17,15 @@ const validateUser = ({ token, ws }) => {
     console.log(user);
     ws.id = user.user_id; // Assign user ID to the WebSocket connection
     webSocketConnectionMap[user.user_id] = ws; // Map the user ID to the WebSocket connection
-    ws.send(sendError("User identified successfully!"));
+    ws.send(
+      JSON.stringify({
+        data: "User identified successfully!",
+        type: SOCKET_CALL_TYPE.IDENTIFY,
+      })
+    );
   } catch (err) {
     ws.close(1008, "Invalid token");
-}
+  }
 };
 
 const makeCall = async ({ data, ws }) => {
@@ -37,28 +42,27 @@ const makeCall = async ({ data, ws }) => {
       peerId,
       callBy: ws.id,
       callType,
-      type
+      type,
     })
   );
 };
 
 const callStatus = async ({ data, ws }) => {
-    const { status, toCall, type } = data;
-    const userws = webSocketConnectionMap[toCall];
-    if (isUndefinedOrNull(userws)) {
-      // TODO: have to make notification entry
-      ws.send(sendError("User not found!"));
-      return;
-    }
-    userws.send(
-      JSON.stringify({
-        status,
-        callBy: ws.id,
-        type
-      })
-    );
-  };
-
+  const { status, toCall, type } = data;
+  const userws = webSocketConnectionMap[toCall];
+  if (isUndefinedOrNull(userws)) {
+    // TODO: have to make notification entry
+    ws.send(sendError("User not found!"));
+    return;
+  }
+  userws.send(
+    JSON.stringify({
+      status,
+      callBy: ws.id,
+      type,
+    })
+  );
+};
 
 const makeSocketConnection = async (server) => {
   try {
@@ -77,9 +81,9 @@ const makeSocketConnection = async (server) => {
           console.log(data);
           switch (data.type) {
             case SOCKET_CALL_TYPE.CALL:
-                await makeCall({ data, ws });
+              await makeCall({ data, ws });
             case SOCKET_CALL_TYPE.CALL_STATUS:
-                await callStatus({ data, ws });
+              await callStatus({ data, ws });
           }
         } catch (error) {
           console.error("Error processing message:", error);
