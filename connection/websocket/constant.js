@@ -3,11 +3,12 @@ const SOCKET_CALL_TYPE = {
     CALL: 'call',
     CALL_STATUS: 'call-status',
     ERROR: 'error',
+    CALL_END: 'call-end',
 }
 
 const CALL_TYPE = {
     AUDIO: 'audio',
-    VIDEO: 'vide'
+    VIDEO: 'video'
 }
 
 module.exports = {

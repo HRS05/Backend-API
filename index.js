@@ -1,14 +1,30 @@
 const express = require("express");
 const app = express();
-var http = require("http");
-const server = http.createServer(app);
+const http = require("http");
+const https = require("https");
+
 const bodyParser = require("body-parser");
 const routes = require('./routes');
 const cors = require('cors');
 const { corsConfig } = require('./constant/index')
 const socketCommon = require('./connection/websocket/index')
-
 require("dotenv").config();
+const mode = process.env.mode;
+const server =
+  mode == 'PROD'
+    ? https.createServer(
+        {
+          cert: fs.readFileSync(
+            "/etc/letsencrypt/live/api.harshjmhr.xyz/fullchain.pem"
+          ),
+          key: fs.readFileSync(
+            "/etc/letsencrypt/live/api.harshjmhr.xyz/privkey.pem"
+          ),
+        },
+        app
+      )
+    : http.createServer(app);
+
 
 const { RedisManager } = require("./connection/redis/index")
 const { DBManager } = require("./connection/db/index")
