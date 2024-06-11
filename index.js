@@ -16,7 +16,7 @@ const server =
     ? https.createServer(
         {
           cert: fs.readFileSync(
-            "/home/ubuntu/backend/cert.pem"
+            "/home/ubuntu/backend/fullchain.pem"
           ),
           key: fs.readFileSync(
             "/home/ubuntu/backend/privkey.pem"
