@@ -16,10 +16,10 @@ const server =
     ? https.createServer(
         {
           cert: fs.readFileSync(
-            "/etc/letsencrypt/live/api.harshjmhr.xyz/cert.pem"
+            "/home/ubuntu/backend/cert.pem"
           ),
           key: fs.readFileSync(
-            "/etc/letsencrypt/live/api.harshjmhr.xyz/privkey.pem"
+            "/home/ubuntu/backend/privkey.pem"
           ),
         },
         app
