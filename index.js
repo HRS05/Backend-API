@@ -9,7 +9,7 @@ const cors = require('cors');
 const { corsConfig } = require('./constant/index')
 const socketCommon = require('./connection/websocket/index')
 require("dotenv").config();
-const mode = process.env.mode;
+const mode = process.env.MODE;
 const server =
   mode == 'PROD'
     ? https.createServer(
