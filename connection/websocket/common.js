@@ -37,7 +37,7 @@ const makeCall = async ({ data, ws }) => {
     return;
   }
   console.log(`person exists: ${toCall}`)
-  const x = userws.send(
+  userws.send(
     JSON.stringify({
       peerId,
       callBy: ws.id,
@@ -45,7 +45,6 @@ const makeCall = async ({ data, ws }) => {
       type,
     })
   );
-  console.log(x);
 };
 
 const callStatus = async ({ data, ws }) => {
@@ -94,9 +93,9 @@ const makeSocketConnection = async (server) => {
       ws.on("close", () => {
         const id = ws.id;
         console.log(`socket connection got closed for id: ${ws.id}`);
-        console.log(JSON.stringify(webSocketConnectionMap));
+        console.log(JSON.stringify(Object.keys(webSocketConnectionMap).length));
         delete webSocketConnectionMap[id];
-        console.log(JSON.stringify(webSocketConnectionMap));
+        console.log(JSON.stringify(Object.keys(webSocketConnectionMap).length));
       });
     });
   } catch (error) {
