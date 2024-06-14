@@ -36,7 +36,7 @@ const makeCall = async ({ data, ws }) => {
     ws.send(sendError("User not found!"));
     return;
   }
-  console.log(userws);
+  console.log(`person exists: ${toCall}`)
   userws.send(
     JSON.stringify({
       peerId,
