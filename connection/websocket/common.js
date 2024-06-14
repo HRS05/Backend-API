@@ -37,7 +37,7 @@ const makeCall = async ({ data, ws }) => {
     return;
   }
   console.log(`person exists: ${toCall}`)
-  userws.send(
+  const x = userws.send(
     JSON.stringify({
       peerId,
       callBy: ws.id,
@@ -45,6 +45,7 @@ const makeCall = async ({ data, ws }) => {
       type,
     })
   );
+  console.log(x);
 };
 
 const callStatus = async ({ data, ws }) => {
