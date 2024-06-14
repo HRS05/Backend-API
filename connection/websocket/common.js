@@ -92,7 +92,10 @@ const makeSocketConnection = async (server) => {
 
       ws.on("close", () => {
         const id = ws.id;
+        console.log(`socket connection got closed for id: ${ws.id}`);
+        console.log(webSocketConnectionMap);
         delete webSocketConnectionMap[id];
+        console.log(webSocketConnectionMap);
       });
     });
   } catch (error) {
