@@ -66,14 +66,23 @@ const callStatus = async ({ data, ws }) => {
 
 const makeSocketConnection = async (server) => {
   try {
-    //creating websocket server
+    // Creating WebSocket server
     const wss = new webSocket.Server({ server });
+
     wss.on("connection", function connection(ws, req) {
       console.log("A new client Connected!");
       const parameters = url.parse(req.url, true).query;
       const token = parameters.token;
       console.log("token -> ", token);
       validateUser({ token, ws });
+
+      // Set interval to send ping messages every 25 seconds
+      const keepAliveInterval = setInterval(() => {
+        if (ws.readyState === ws.OPEN) {
+          ws.ping();
+          console.log(`Sent keep-alive ping to ${ws.id}`);
+        }
+      }, 25000);
 
       ws.on("message", async function incoming(message) {
         try {
@@ -82,8 +91,10 @@ const makeSocketConnection = async (server) => {
           switch (data.type) {
             case SOCKET_CALL_TYPE.CALL:
               await makeCall({ data, ws });
+              break; // Add break to prevent fall-through
             case SOCKET_CALL_TYPE.CALL_STATUS:
               await callStatus({ data, ws });
+              break;
           }
         } catch (error) {
           console.error("Error processing message:", error);
@@ -91,15 +102,15 @@ const makeSocketConnection = async (server) => {
       });
 
       ws.on("close", () => {
+        clearInterval(keepAliveInterval); // Clear interval when connection closes
         const id = ws.id;
-        console.log(`socket connection got closed for id: ${ws.id}`);
+        console.log(`Socket connection got closed for id: ${ws.id}`);
         console.log(JSON.stringify(Object.keys(webSocketConnectionMap).length));
         delete webSocketConnectionMap[id];
         console.log(JSON.stringify(Object.keys(webSocketConnectionMap).length));
       });
     });
   } catch (error) {
-    //Logger.error(`Error while creating redis client ${JSON.stringify(error)}`);
     console.log(`Error while creating redis client ${JSON.stringify(error)}`);
   }
 };
