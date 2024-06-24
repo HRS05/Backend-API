@@ -12,5 +12,6 @@ router.post("/send-otp-email", execute(userController.sendOTPEmail));
 router.post("/verify-otp-email", execute(userController.verifyOTPEmail));
 router.post("/get-experts", auth, accessAllowed(['user']), executor(userController.getExperts));
 router.get("/get-expert/:id", auth, accessAllowed(['user']), executor(userController.getExpert));
+router.get("/get-user/:id", auth, accessAllowed(['user', 'expert']), executor(userController.getUser));
 
 module.exports = router;

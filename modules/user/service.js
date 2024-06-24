@@ -260,6 +260,29 @@ const userService = {
       .findOne(query);
 
     if (isUndefinedOrNull(expert)) {
+        throw new Error(`No expert exists with given id: ${id}`);
+    }  
+
+    const result = {
+      expert,
+    };
+
+    return result;
+  },
+
+  getUser: async ({ data, reqBy }) => {
+    const { id } = data;
+
+    const query = {
+      _id: id,
+      type: TYPE.USER,
+    };
+
+
+    const expert = await userDetailsModel
+      .findOne(query);
+
+    if (isUndefinedOrNull(expert)) {
         throw new Error(`No user exists with given id: ${id}`);
     }  
 
