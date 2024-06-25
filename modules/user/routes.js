@@ -4,7 +4,7 @@ const router = express.Router();
 const execute = require('../../middleware/executor')
 const { auth, executor, accessAllowed, imageUpload} = require('../../middleware/index')
 
-
+router.get("/verify-token", auth, execute(() => "Valid token"));
 router.post("/register", execute(userController.registerUser));
 router.post("/login", execute(userController.loginUser));
 router.post("/update-profile", auth, accessAllowed(['user', 'expert']), imageUpload(['image', 'image1']), executor(userController.updateProfile));
