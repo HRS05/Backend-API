@@ -47,6 +47,27 @@ const makeCall = async ({ data, ws }) => {
   );
 };
 
+const sendChat = async ({ data, ws }) => {
+  const { toCall, callType, type, message, url, chatType } = data;
+  const userws = webSocketConnectionMap[toCall];
+
+  if (isUndefinedOrNull(userws)) {
+    // TODO: have to make notification entry
+    ws.send(sendError("User not found!"));
+    return;
+  }
+  console.log(`person exists: ${toCall}`)
+  userws.send(
+    JSON.stringify({
+      callBy: ws.id,
+      message,
+      url,
+      callType,
+      type,
+    })
+  );
+};
+
 const callStatus = async ({ data, ws }) => {
   const { status, toCall, type } = data;
   const userws = webSocketConnectionMap[toCall];
@@ -94,6 +115,9 @@ const makeSocketConnection = async (server) => {
               break; // Add break to prevent fall-through
             case SOCKET_CALL_TYPE.CALL_STATUS:
               await callStatus({ data, ws });
+              break;
+            case SOCKET_CALL_TYPE.CHAT:
+              await sendChat({ data, ws });
               break;
           }
         } catch (error) {
