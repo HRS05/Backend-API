@@ -9,6 +9,8 @@ var chatSchema = new mongoose.Schema(
     senderId: String,
     message: String,
     url: String,
+    sentTime: Date,
+
   },
   { timestamps: true }
 );

@@ -12,7 +12,7 @@ const sendMessage = {
     }),
 };
 
-const getChat = {
+const getChat = Joi.object().keys({
     params: Joi.object().keys({
         id: Joi.string().required(),
     }),
@@ -20,7 +20,7 @@ const getChat = {
         limit: Joi.number().integer().min(1).max(20).optional(), 
         page: Joi.number().integer().min(0).optional(),
     }),
-};
+});
 
 
 module.exports = {

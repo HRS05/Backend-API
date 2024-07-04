@@ -48,7 +48,7 @@ const makeCall = async ({ data, ws }) => {
 };
 
 const sendChat = async ({ data, ws }) => {
-  const { toCall, callType, type, message, url, chatType, sentTime } = data;
+  const { toCall, type, message, url, chatType, sentTime } = data;
   const userws = webSocketConnectionMap[toCall];
 
   //adding chat message into db
@@ -72,8 +72,9 @@ const sendChat = async ({ data, ws }) => {
       callBy: ws.id,
       message,
       url,
-      callType,
+      chatType,
       type,
+      sentTime
     })
   );
 };
