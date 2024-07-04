@@ -5,9 +5,8 @@ mongoose.Promise = global.Promise;
 
 var chatSchema = new mongoose.Schema(
   {
-    userId: String,
-    expertId: String,
-    senderId: String, // ethier userId or expertId
+    reciverId: String,
+    senderId: String,
     message: String,
     url: String,
   },

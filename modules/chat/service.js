@@ -6,29 +6,16 @@ const _ = require('lodash');
 require("dotenv").config();
 
 const chatService = {
-  addMessage: async (req) => {
+  sendMessage: async (data) => {
     let chat = new chatDetailsModel();
-    chat.expertId = req.body.expertId.trim();
-    chat.userId = req.body.expertId.trim();
-    chat.message = req.body.expertId.trim();
-    chat.senderId = req.body.expertId.trim();
-
-    if (senderId != req.user.user_id && senderId != req.user.user_id) {
-      throw new Error("Not Authourized to communicate");
-    }
-    const e = userDetailsModel.find({ type: 'expert', _id: userId });
-    if (isUndefinedOrNull(e)) {
-      throw new Error("Invalid expert ID.");
-    }
-
-    const u = userDetailsModel.find({ type: 'user', _id: expertId });
-    if (isUndefinedOrNull(u)) {
-      throw new Error("Invalid user ID.");
-    }
-
-    if (senderId != expertId && senderId != userId) {
-      throw new Error("Invalid Sender Id (Sender Id must be either userId or expertId)");
-    }
+    const { reciverId, senderId, message, type, url, sentTime } = data
+    
+    chat.reciverId = reciverId;
+    chat.senderId = senderId;
+    chat.message = message;
+    chat.type = type;
+    chat.sentTime = sentTime;
+    if (!isUndefinedOrNull(url)) chat.url = url;
 
     try {
       savedChat = await chat.save();
@@ -38,13 +25,12 @@ const chatService = {
     return savedChat;
   },
 
-  getChat: async (req) => {
-    const userId = req.params.id;
-    const { personId, page = 1, limit = 20 } = req.query;
-  
-    if (req.user.user_id !== userId) {
-      throw new Error("Not Authorized to communicate");
-    }
+  getChat: async (d) => {
+    const { data  , reqBy } = d;
+    const { query, params } = data;
+    const id1 = params.id;
+    const id2 = reqBy.user_id;
+    const { page = 1, limit = 20 } = data.query;
   
     const currentPage = parseInt(page, 10);
     const itemsPerPage = parseInt(limit, 10);
@@ -55,17 +41,12 @@ const chatService = {
   
     const skip = (currentPage - 1) * itemsPerPage;
   
-    const query = {};
+    const q = {
+      reciverId: { $in: [id1, id2] },
+      senderId: { $in: [id1, id2] }
+    };
   
-    if (req.user.type === 'expert') {
-      query.expertId = userId;
-      query.userId = personId;
-    } else {
-      query.userId = userId;
-      query.expertId = personId;
-    }
-  
-    const chats = await chatDetailsModel.find(query)
+    const chats = await chatDetailsModel.find(q)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(itemsPerPage);

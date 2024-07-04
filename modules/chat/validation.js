@@ -1,11 +1,14 @@
 const Joi = require('joi');
+const { TYPE } = require('./constant');
 
 const sendMessage = {
     body: Joi.object().keys({
-        userId: Joi.string().required(),
-        expertId: Joi.string().required(),
+        reciverId: Joi.string().required(),
         senderId: Joi.string().required(),
-        message: Joi.string().required(),
+        message: Joi.string().optional(),
+        type: Joi.string().allow(TYPE.FILE, TYPE.TEXT).required(),
+        url: Joi.string().optional(),
+        sentTime: Joi.date().required(),
     }),
 };
 
@@ -14,7 +17,6 @@ const getChat = {
         id: Joi.string().required(),
     }),
     query: Joi.object().keys({
-        personId: Joi.string().required(),
         limit: Joi.number().integer().min(1).max(20).optional(), 
         page: Joi.number().integer().min(0).optional(),
     }),

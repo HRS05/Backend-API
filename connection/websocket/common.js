@@ -4,7 +4,7 @@ require("dotenv").config();
 const { CALL_TYPE, SOCKET_CALL_TYPE } = require("./constant");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const url = require("url");
-
+const { chatModule } = require('../../modules/index')
 let webSocketConnectionMap = {};
 
 const sendError = (data) => {
@@ -48,8 +48,18 @@ const makeCall = async ({ data, ws }) => {
 };
 
 const sendChat = async ({ data, ws }) => {
-  const { toCall, callType, type, message, url, chatType } = data;
+  const { toCall, callType, type, message, url, chatType, sentTime } = data;
   const userws = webSocketConnectionMap[toCall];
+
+  //adding chat message into db
+  await chatModule.chatService.sendMessage({
+    reciverId: toCall,
+    senderId: ws.id,
+    message,
+    type: chatType,
+    url,
+    sentTime,
+  });
 
   if (isUndefinedOrNull(userws)) {
     // TODO: have to make notification entry
