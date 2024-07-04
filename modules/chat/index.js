@@ -1,4 +1,4 @@
-const userRoute = require('./routes');
+const chatRoute = require('./routes');
 const chatService = require('./service')
 
 module.exports = {
