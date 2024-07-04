@@ -63,7 +63,7 @@ const sendChat = async ({ data, ws }) => {
 
   if (isUndefinedOrNull(userws)) {
     // TODO: have to make notification entry
-    ws.send(sendError("User not found!"));
+    //ws.send(sendError("User is offline!"));
     return;
   }
   console.log(`person exists: ${toCall}`)
@@ -74,6 +74,28 @@ const sendChat = async ({ data, ws }) => {
       url,
       callType,
       type,
+    })
+  );
+};
+
+const userStatus = async ({ data, ws }) => {
+  const { toCall, type } = data;
+  const userws = webSocketConnectionMap[toCall];
+
+  if (isUndefinedOrNull(userws)) {
+    // TODO: have to make notification entry
+    userws.send(
+      JSON.stringify({
+        status: "OFFLINE",
+        type
+      })
+    );
+    return;
+  }
+  userws.send(
+    JSON.stringify({
+      status: "ONLINE",
+      type
     })
   );
 };
@@ -128,6 +150,9 @@ const makeSocketConnection = async (server) => {
               break;
             case SOCKET_CALL_TYPE.CHAT:
               await sendChat({ data, ws });
+              break;
+            case SOCKET_CALL_TYPE.USER_STATUS:
+              await userStatus({ data, ws });
               break;
           }
         } catch (error) {
