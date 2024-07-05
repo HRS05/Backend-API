@@ -3,11 +3,11 @@ const mongoose = require("mongoose"),
 mongoose.Promise = global.Promise;
 
 
-var chatSchema = new mongoose.Schema(
+var chatHistorySchema = new mongoose.Schema(
   {
     reciverId: String,
     senderId: String,
-    message: String,
+    lastMessage: String,
     url: String,
     sentTime: Date,
     type: String,
@@ -15,5 +15,5 @@ var chatSchema = new mongoose.Schema(
   { timestamps: true }
 );
 module.exports =
-  mongoose.models.chatDetailsModel ||
-  mongoose.model("chatDetailsModel", chatSchema);
+  mongoose.models.chatHistoryModel ||
+  mongoose.model("chatHistoryModel", chatHistorySchema);

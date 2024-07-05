@@ -2,7 +2,7 @@ const chatDetailsModel = require("./model");
 const { userDetailsModel } = require("../../models");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const _ = require('lodash');
-
+const { chatHistoryService } = require('../chatHistory/index')
 require("dotenv").config();
 
 const chatService = {
@@ -19,6 +19,7 @@ const chatService = {
 
     try {
       savedChat = await chat.save();
+      chatHistoryService.addHistory(data);
     } catch (e) {
       throw new Error("Error  " + e.message);
     }
