@@ -2,7 +2,7 @@ const chatHistoryModel = require("./model");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const _ = require('lodash');
 const { getHistory } = require("./controller");
-
+const { userCache } = require('../user/index')
 require("dotenv").config();
 
 const chatService = {
@@ -51,19 +51,22 @@ const chatService = {
     const chatHistory = [];
     const mp = {};
 
-    _.forEach(data, (value) => {
+    for (const value of data) {
+      let data = value._doc
       if (value.senderId == userId) {
         if (isUndefinedOrNull(mp[value.reciverId])) {
-          chatHistory.push(value);
+          data.personData = await userCache.getUserBasicDetails(value.reciverId);
+          chatHistory.push(data);
           mp[value.reciverId] = true;
         }
       } else if (value.reciverId == userId) {
         if (isUndefinedOrNull(mp[value.senderId])) {
-          chatHistory.push(value);
+          data.personData = await userCache.getUserBasicDetails(value.senderId);
+          chatHistory.push(data);
           mp[value.senderId] = true;
         }
       }
-    });
+    };
 
     const result = {
       chatHistory,
