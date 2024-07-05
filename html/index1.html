@@ -11,7 +11,7 @@
 </body>
 <script>
     // Create WebSocket connection.
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY2NTkxYWNlM2VkYzE4NjIzZDk4MjJlIiwiZW1haWwiOiJzZXRoaUBleGFtcGxlLmNvbSIsInR5cGUiOiJleHBlcnQiLCJpYXQiOjE3MTgzOTM4NzIsImV4cCI6MTcxODQ4MDI3Mn0.YDDVnF_t5T4w7h47OOWBTyngfy0iTx-3x2nM5dnucIY"
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY2NTkxYWNlM2VkYzE4NjIzZDk4MjJlIiwiZW1haWwiOiJzZXRoaUBleGFtcGxlLmNvbSIsInR5cGUiOiJleHBlcnQiLCJpYXQiOjE3MjAxODQzMDEsImV4cCI6MTcyMDI3MDcwMX0.Q7O1yhAaCVqZ9e26vsKqI6uacO2KAwyNOtIvRNmvYEI"
     const socket = new WebSocket(`ws://localhost:3000/socket?token=${token}`);
 
      // Connection opened
@@ -34,11 +34,12 @@
 
     const sendMessage = () => {
         const data = {
-            type: 'call',
-            peerId: 'jsfkjs-fskjf-dkjfsk-fsdfs',
+            type: 'chat',
+            chatType: 'text',
             toCall: '663cfb1ab79b4ef56406c399',
-            callType: 'video'
-
+            callType: 'video',
+            message: 'hey fgdgdfg fdgfgdfgd dgdfgd',
+            sentTime: new Date().getDate()
         }
         socket.send(JSON.stringify(data));
     }

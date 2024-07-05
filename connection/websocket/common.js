@@ -4,7 +4,13 @@ require("dotenv").config();
 const { CALL_TYPE, SOCKET_CALL_TYPE } = require("./constant");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const url = require("url");
-const { chatModule } = require('../../modules/index')
+const {
+  makeCall,
+  sendChat,
+  userStatus,
+  callStatus,
+} = require("./communication");
+
 let webSocketConnectionMap = {};
 
 const sendError = (data) => {
@@ -28,106 +34,14 @@ const validateUser = ({ token, ws }) => {
   }
 };
 
-const makeCall = async ({ data, ws }) => {
-  const { peerId, toCall, callType, type } = data;
-  const userws = webSocketConnectionMap[toCall];
-  if (isUndefinedOrNull(userws)) {
-    // TODO: have to make notification entry
-    ws.send(sendError("User not found!"));
-    return;
-  }
-  console.log(`person exists: ${toCall}`)
-  userws.send(
-    JSON.stringify({
-      peerId,
-      callBy: ws.id,
-      callType,
-      type,
-    })
-  );
-};
-
-const sendChat = async ({ data, ws }) => {
-  const { toCall, type, message, url, chatType, sentTime } = data;
-  const userws = webSocketConnectionMap[toCall];
-
-  //adding chat message into db
-  await chatModule.chatService.sendMessage({
-    reciverId: toCall,
-    senderId: ws.id,
-    message,
-    type: chatType,
-    url,
-    sentTime,
-  });
-
-  if (isUndefinedOrNull(userws)) {
-    // TODO: have to make notification entry
-    //ws.send(sendError("User is offline!"));
-    return;
-  }
-  console.log(`person exists: ${toCall}`)
-  userws.send(
-    JSON.stringify({
-      callBy: ws.id,
-      message,
-      url,
-      chatType,
-      type,
-      sentTime
-    })
-  );
-};
-
-const userStatus = async ({ data, ws }) => {
-  const { toCall, type } = data;
-  const userws = webSocketConnectionMap[toCall];
-
-  if (isUndefinedOrNull(userws)) {
-    // TODO: have to make notification entry
-    userws.send(
-      JSON.stringify({
-        status: "OFFLINE",
-        type
-      })
-    );
-    return;
-  }
-  userws.send(
-    JSON.stringify({
-      status: "ONLINE",
-      type
-    })
-  );
-};
-
-const callStatus = async ({ data, ws }) => {
-  const { status, toCall, type } = data;
-  const userws = webSocketConnectionMap[toCall];
-  if (isUndefinedOrNull(userws)) {
-    // TODO: have to make notification entry
-    ws.send(sendError("User not found!"));
-    return;
-  }
-  userws.send(
-    JSON.stringify({
-      status,
-      callBy: ws.id,
-      type,
-    })
-  );
-};
-
 const makeSocketConnection = async (server) => {
   try {
     // Creating WebSocket server
     const wss = new webSocket.Server({ server });
 
     wss.on("connection", function connection(ws, req) {
-      console.log("A new client Connected!");
       const parameters = url.parse(req.url, true).query;
       const token = parameters.token;
-      console.log("token -> ", token);
       validateUser({ token, ws });
 
       // Set interval to send ping messages every 25 seconds
@@ -144,16 +58,16 @@ const makeSocketConnection = async (server) => {
           console.log(data);
           switch (data.type) {
             case SOCKET_CALL_TYPE.CALL:
-              await makeCall({ data, ws });
-              break; // Add break to prevent fall-through
+              await makeCall({ data, ws, webSocketConnectionMap });
+              break;
             case SOCKET_CALL_TYPE.CALL_STATUS:
-              await callStatus({ data, ws });
+              await callStatus({ data, ws, webSocketConnectionMap });
               break;
             case SOCKET_CALL_TYPE.CHAT:
-              await sendChat({ data, ws });
+              await sendChat({ data, ws, webSocketConnectionMap });
               break;
             case SOCKET_CALL_TYPE.USER_STATUS:
-              await userStatus({ data, ws });
+              await userStatus({ data, ws, webSocketConnectionMap });
               break;
           }
         } catch (error) {
