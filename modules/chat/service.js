@@ -52,7 +52,7 @@ const chatService = {
       .skip(skip)
       .limit(itemsPerPage);
   
-    const totalChats = await chatDetailsModel.countDocuments(query);
+    const totalChats = await chatDetailsModel.countDocuments(q);
   
     const result = {
       chats,
