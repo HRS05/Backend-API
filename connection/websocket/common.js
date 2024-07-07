@@ -76,6 +76,7 @@ const makeSocketConnection = async (server) => {
       });
 
       ws.on("close", () => {
+        if (isUndefinedOrNull(ws.id)) return;
         clearInterval(keepAliveInterval); // Clear interval when connection closes
         const id = ws.id;
         console.log(`Socket connection got closed for id: ${ws.id}`);

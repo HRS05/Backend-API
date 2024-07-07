@@ -1,7 +1,6 @@
 const chatHistoryModel = require("./model");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const _ = require('lodash');
-const { getHistory } = require("./controller");
 const { userCache } = require('../user/index')
 require("dotenv").config();
 

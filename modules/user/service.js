@@ -8,7 +8,8 @@ const sendMail = require('../../utils/notification/email/send');
 const { RedisCacheKey } = require("../../connection/redis");
 const { putObjectToBucket } = require("../../utils/s3/s3");
 const { s3ObjectDetails } = require("../../utils/s3/index");
-
+const { RedisAuthTokenCacheKey } = require("../../connection/redis");
+const cache = require('./cache');
 require("dotenv").config();
 
 const userService = {
@@ -73,6 +74,8 @@ const userService = {
         expiresIn: "2h",
       }
     );
+    
+    await RedisAuthTokenCacheKey.setUserAuthToken({ id: savedUser._id, token });
     // save user token
     let response = {};
     response.token = token;
@@ -93,6 +96,8 @@ const userService = {
         expiresIn: "24h",
       }
     );
+    await RedisAuthTokenCacheKey.setUserAuthToken({ id: user._id, token });
+
     // save user token
     let response = {
       user,
@@ -142,7 +147,7 @@ const userService = {
       throw new Error("Invalid OTP for mail id: " + email);
     }
 
-    RedisCacheKey.deleteKey(`email:verify:${email}`);
+    await RedisCacheKey.deleteKey(`email:verify:${email}`);
 
     let response = {
       message: "OTP verified successfully",

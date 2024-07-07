@@ -28,8 +28,7 @@ const deleteUserBasicDetails = async (id) => {
     await RedisCacheKey.deleteKey(key);
 }
 
-
 module.exports = {
     getUserBasicDetails,
-    deleteUserBasicDetails
+    deleteUserBasicDetails,
 }
