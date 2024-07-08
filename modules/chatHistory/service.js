@@ -2,6 +2,8 @@ const chatHistoryModel = require("./model");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const _ = require('lodash');
 const { userCache } = require('../user/index')
+const cache = require('./cache');
+const { UNREAD_TASK } = require('./constant');
 require("dotenv").config();
 
 const chatService = {
@@ -55,12 +57,14 @@ const chatService = {
       if (value.senderId == userId) {
         if (isUndefinedOrNull(mp[value.reciverId])) {
           data.personData = await userCache.getUserBasicDetails(value.reciverId);
+          data.unreadCount = await cache.getUnreadCount({ senderId: value.reciverId, reciverId: userId });
           chatHistory.push(data);
           mp[value.reciverId] = true;
         }
       } else if (value.reciverId == userId) {
         if (isUndefinedOrNull(mp[value.senderId])) {
           data.personData = await userCache.getUserBasicDetails(value.senderId);
+          data.unreadCount = await cache.getUnreadCount({ senderId: value.senderId, reciverId: userId });
           chatHistory.push(data);
           mp[value.senderId] = true;
         }
@@ -71,6 +75,29 @@ const chatService = {
       chatHistory,
     };
   
+    return result;
+  },
+
+  updateUnreadCount: async (d) => {
+    const { data, reqBy } = d;
+    const { params, body } = data;
+    const senderId = reqBy.user_id;
+    const reciverId = params.id;
+    const task = body.task;
+    switch (task) {
+      case UNREAD_TASK.DECREMENT:
+        await cache.decrementUnreadCount({senderId, reciverId});
+        break;
+      case UNREAD_TASK.INCREMENT:
+        await cache.increamentUnreadCount({senderId, reciverId});
+        break;
+      case UNREAD_TASK.MARK_ZERO:
+        await cache.markUnreadCountZero({senderId, reciverId});
+        break;
+    }
+    const result = {
+      message: 'status updated successfully'
+    }
     return result;
   }
 

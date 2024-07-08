@@ -4,4 +4,10 @@ module.exports = {
         FILE: 'file'
     },
 
+    UNREAD_TASK: {
+        DECREMENT: "DECR",
+        INCREMENT: "INCR",
+        MARK_ZERO: "MARK_ZERO"
+    }
+
 };

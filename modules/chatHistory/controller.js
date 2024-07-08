@@ -1,11 +1,17 @@
-const chatService = require("./service");
+const chatHistoryService = require("./service");
 const validate = require("./validation");
 const { validateInfo } = require("../../middleware/index");
 
 const chatController = {
 
   getHistory: async (req, res) => {
-    r = await chatService.getHistory({reqBy: req.user});
+    r = await chatHistoryService.getHistory({reqBy: req.user});
+    return r;
+  },
+
+  updateUnreadCount: async (req, res) => {
+    const data = validateInfo(validate.updateUnreadCount, { params: req.params, body: req.body });
+    r = await chatHistoryService.getChat({data, reqBy: req.user});
     return r;
   },
 
