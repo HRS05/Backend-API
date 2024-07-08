@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { isUndefinedOrNull } = require("../../utils/validators");
 const { chatModule } = require("../../modules/index");
+const { CALL_TYPE, SOCKET_CALL_TYPE } = require("./constant");
 
 const sendError = (data) => {
   return JSON.stringify({ error: data, type: SOCKET_CALL_TYPE.ERROR });
