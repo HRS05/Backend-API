@@ -42,7 +42,8 @@ const getUnreadCount = async ({senderId, reciverId}) => {
     if (isUndefinedOrNull(data)) {
         return 0;
     }
-    return data;
+    let count = toInteger(data);
+    return count;
 }
 
 module.exports = {
