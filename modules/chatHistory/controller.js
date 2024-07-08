@@ -11,7 +11,7 @@ const chatController = {
 
   updateUnreadCount: async (req, res) => {
     const data = validateInfo(validate.updateUnreadCount, { params: req.params, body: req.body });
-    r = await chatHistoryService.getChat({data, reqBy: req.user});
+    r = await chatHistoryService.updateUnreadCount({data, reqBy: req.user});
     return r;
   },
 
