@@ -1,4 +1,5 @@
 
+const { toInteger } = require("lodash");
 const { RedisCacheKey } = require("../../connection/redis");
 const { isUndefinedOrNull } = require("../../utils/validators");
 const userDetailsModel = require("../chat/model");
@@ -13,7 +14,8 @@ const increamentUnreadCount = async ({senderId, reciverId}) => {
     if (isUndefinedOrNull(data)) {
         await RedisCacheKey.setValue(key, 0);
     } else {
-        await RedisCacheKey.setValue(key, data++);
+        let count = toInteger(data);
+        await RedisCacheKey.setValue(key, count+1);
     }
 }
 
@@ -23,8 +25,9 @@ const decrementUnreadCount = async ({senderId, reciverId}) => {
     if (isUndefinedOrNull(data)) {
         await RedisCacheKey.setValue(key, 0);
     } else {
-        if (data - 1 >= 0)
-            await RedisCacheKey.setValue(key, data--);
+        let count = toInteger(data);
+        if (count - 1 >= 0)
+            await RedisCacheKey.setValue(key, count-1);
     }
 }
 
