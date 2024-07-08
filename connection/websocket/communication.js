@@ -2,6 +2,10 @@ require("dotenv").config();
 const { isUndefinedOrNull } = require("../../utils/validators");
 const { chatModule } = require("../../modules/index");
 
+const sendError = (data) => {
+  return JSON.stringify({ error: data, type: SOCKET_CALL_TYPE.ERROR });
+};
+
 const makeCall = async ({ data, ws, webSocketConnectionMap }) => {
   const { peerId, toCall, callType, type } = data;
   const userws = webSocketConnectionMap[toCall];
