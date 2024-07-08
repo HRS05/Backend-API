@@ -92,7 +92,7 @@ const chatService = {
         await cache.increamentUnreadCount({senderId, reciverId});
         break;
       case UNREAD_TASK.MARK_ZERO:
-        await cache.markUnreadCountZero({senderId, reciverId});
+        await cache.markUnreadCountZero({senderId: reciverId, reciverId: senderId});
         break;
     }
     const result = {
