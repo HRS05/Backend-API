@@ -304,7 +304,7 @@ const userService = {
     const info = await userDetailsModel
       .findById(id);
 
-    if (isUndefinedOrNull(expert)) {
+    if (isUndefinedOrNull(info)) {
         throw new Error(`No info exists with given id: ${id}`);
     }  
 
