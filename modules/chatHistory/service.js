@@ -81,18 +81,18 @@ const chatService = {
   updateUnreadCount: async (d) => {
     const { data, reqBy } = d;
     const { params, body } = data;
-    const senderId = reqBy.user_id;
-    const reciverId = params.id;
+    const id1 = reqBy.user_id;
+    const id2 = params.id;
     const task = body.task;
     switch (task) {
       case UNREAD_TASK.DECREMENT:
-        await cache.decrementUnreadCount({senderId, reciverId});
+        await cache.decrementUnreadCount({senderId: id1, reciverId: id2});
         break;
       case UNREAD_TASK.INCREMENT:
-        await cache.increamentUnreadCount({senderId, reciverId});
+        await cache.increamentUnreadCount({senderId: id2, reciverId: id1});
         break;
       case UNREAD_TASK.MARK_ZERO:
-        await cache.markUnreadCountZero({senderId: reciverId, reciverId: senderId});
+        await cache.markUnreadCountZero({senderId: id2, reciverId: id1});
         break;
     }
     const result = {
