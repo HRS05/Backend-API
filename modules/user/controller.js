@@ -54,5 +54,10 @@ const userController = {
     return r;
   },
 
+  getInfo: async (req, res) => {
+    r = await userService.getInfo({ reqBy: req.user });
+    return r;
+  },
+
 };
 module.exports = userController;

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const config = process.env;
 const { RedisAuthTokenCacheKey } = require("../connection/redis");
+const { isUndefinedOrNull } = require("../utils/validators");
 
 const verifyToken = async (req, res, next) => {
   const token =
@@ -12,7 +13,7 @@ const verifyToken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.TOKEN_KEY);
     const latestToken = await RedisAuthTokenCacheKey.getUserAuthToken(decoded.user_id);
-    if (latestToken !== token) return res.status(401).send("Invalid Token");
+    if (!isUndefinedOrNull(latestToken) && latestToken !== token) return res.status(401).send("Invalid Token");
     req.user = decoded;
   } catch (err) {
     return res.status(401).send("Invalid Token");

@@ -297,6 +297,23 @@ const userService = {
 
     return result;
   },
+  getInfo: async ({ reqBy }) => {
+    const id = reqBy.user_id;
+
+
+    const info = await userDetailsModel
+      .findById(id);
+
+    if (isUndefinedOrNull(expert)) {
+        throw new Error(`No info exists with given id: ${id}`);
+    }  
+
+    const result = {
+      info,
+    };
+
+    return result;
+  },
 };
 
 module.exports = userService;
