@@ -86,10 +86,10 @@ const chatService = {
     const task = body.task;
     switch (task) {
       case UNREAD_TASK.DECREMENT:
-        await cache.decrementUnreadCount({senderId: id1, reciverId: id2});
+        await cache.decrementUnreadCount({senderId: id2, reciverId: id1});
         break;
       case UNREAD_TASK.INCREMENT:
-        await cache.increamentUnreadCount({senderId: id2, reciverId: id1});
+        await cache.increamentUnreadCount({senderId: id1, reciverId: id2});
         break;
       case UNREAD_TASK.MARK_ZERO:
         await cache.markUnreadCountZero({senderId: id2, reciverId: id1});
