@@ -6,6 +6,7 @@ const SOCKET_CALL_TYPE = {
     CHAT: 'chat',
     ERROR: 'error',
     CALL_END: 'call-end',
+    SOCKET_TASK: 'talk'
 }
 
 const CALL_TYPE = {

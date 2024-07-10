@@ -9,6 +9,7 @@ const {
   sendChat,
   userStatus,
   callStatus,
+  socketTask
 } = require("./communication");
 
 let webSocketConnectionMap = {};
@@ -55,6 +56,7 @@ const makeSocketConnection = async (server) => {
       ws.on("message", async function incoming(message) {
         try {
           const data = JSON.parse(message);
+          console.log(`data send by data: ${ws.id}`);
           console.log(data);
           switch (data.type) {
             case SOCKET_CALL_TYPE.CALL:
@@ -69,6 +71,9 @@ const makeSocketConnection = async (server) => {
             case SOCKET_CALL_TYPE.USER_STATUS:
               await userStatus({ data, ws, webSocketConnectionMap });
               break;
+            case SOCKET_CALL_TYPE.SOCKET_TASK:
+              await socketTask({ data, ws, webSocketConnectionMap });
+              break;
           }
         } catch (error) {
           console.error("Error processing message:", error);
@@ -76,7 +81,10 @@ const makeSocketConnection = async (server) => {
       });
 
       ws.on("close", () => {
-        if (isUndefinedOrNull(ws.id)) return;
+        if (isUndefinedOrNull(ws.id)) {
+          delete webSocketConnectionMap[id];
+          return;
+        }
         clearInterval(keepAliveInterval); // Clear interval when connection closes
         const id = ws.id;
         console.log(`Socket connection got closed for id: ${ws.id}`);

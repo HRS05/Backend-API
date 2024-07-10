@@ -80,6 +80,26 @@ const userStatus = async ({ data, ws, webSocketConnectionMap }) => {
   );
 };
 
+// this will exchange message for non persisting calls
+const socketTask = async ({ data, ws, webSocketConnectionMap }) => {
+  const { toCall, type, info } = data;
+  const userws = webSocketConnectionMap[toCall];
+
+  if (isUndefinedOrNull(userws)) {
+    // TODO: have to make notification entry
+    //ws.send(sendError("User is offline!"));
+    return;
+  }
+  console.log(`person exists: ${toCall}`);
+  userws.send(
+    JSON.stringify({
+      callBy: ws.id,
+      type,
+      info,
+    })
+  );
+};
+
 const callStatus = async ({ data, ws, webSocketConnectionMap }) => {
   const { status, toCall, type } = data;
   const userws = webSocketConnectionMap[toCall];
@@ -102,4 +122,5 @@ module.exports = {
   sendChat,
   userStatus,
   callStatus,
+  socketTask
 };
