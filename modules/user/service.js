@@ -175,7 +175,7 @@ const userService = {
     } = data;
 
     let user = {};
-    user.name = name;
+    if (!isUndefinedOrNull(name)) r.name = name;
     if (!isUndefinedOrNull(gender)) user.gender = gender;
     if (!isUndefinedOrNull(experience)) user.experience = experience;
     if (!isUndefinedOrNull(category)) user.category = JSON.parse(category);
@@ -191,8 +191,8 @@ const userService = {
         type: s3ObjectDetails.TYPES.PROFILE,
       });
     }
-    user.password = password;
-    user.location = location;
+    if (!isUndefinedOrNull(password)) user.password = password;
+    if (!isUndefinedOrNull(location)) user.location = location;
 
     if (reqBy.type == TYPE.EXPERT) {
       user.gst = gst;

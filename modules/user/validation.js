@@ -18,15 +18,15 @@ const register = Joi.object({
 });
 
 const updateProfile = Joi.object({
-	name: Joi.string().required(),
+	name: Joi.string().optional(),
     age: Joi.number().optional(),
 	gender: Joi.string().allow("M", "F").optional(),
     gst: Joi.string().optional(),
     bankName: Joi.string().optional(),
     ifscCode: Joi.string().optional(),
     bankAccountNumber: Joi.string().optional(),
-    location: Joi.string().required(),
-    password: Joi.string().required(),
+    location: Joi.string().optional(),
+    password: Joi.string().optional(),
     linkedinUrl: Joi.string().optional(),
     twitterUrl: Joi.string().optional(),
     profileUrl: Joi.string().optional(),
