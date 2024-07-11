@@ -175,7 +175,7 @@ const userService = {
     } = data;
 
     let user = {};
-    if (!isUndefinedOrNull(name)) r.name = name;
+    if (!isUndefinedOrNull(name)) user.name = name;
     if (!isUndefinedOrNull(gender)) user.gender = gender;
     if (!isUndefinedOrNull(experience)) user.experience = experience;
     if (!isUndefinedOrNull(category)) user.category = JSON.parse(category);
