@@ -82,7 +82,6 @@ const makeSocketConnection = async (server) => {
 
       ws.on("close", () => {
         if (isUndefinedOrNull(ws.id)) {
-          delete webSocketConnectionMap[id];
           return;
         }
         clearInterval(keepAliveInterval); // Clear interval when connection closes
