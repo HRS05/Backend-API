@@ -18,9 +18,9 @@ let portNumber = process.env.APP_PORT || 3000;
 
 server.listen(portNumber, async function () {
   console.log("Server is running on " + portNumber);
-  await socketCommon.common.makeSocketConnection(server);
   await DBManager.connect();
   await RedisManager.connect();
+  await socketCommon.common.makeSocketConnection(server);
   app.use(
     cors({
         origin: corsConfig.ALLOWED_ORIGIN,
