@@ -207,6 +207,9 @@ const userService = {
       { ...user }
     );
 
+    //clearing cache
+    await cache.deleteUserBasicDetails(reqBy.user_id);
+
     return { result: `${reqBy.type} updated successfully.` };
   },
 
