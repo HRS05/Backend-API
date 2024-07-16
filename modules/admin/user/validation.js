@@ -14,8 +14,15 @@ const login = Joi.object({
     password: Joi.string().required(),
 });
 
+const get = Joi.object({
+	category: Joi.array().items(Joi.string()).required(),
+    limit: Joi.number().integer().min(1).max(20).optional(), 
+    page: Joi.number().integer().min(0).optional(),
+    type: Joi.string().allow("user", "expert").required(),
+});
 
 module.exports = {
     register,
-    login
+    login,
+    get
 };

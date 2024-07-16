@@ -14,5 +14,12 @@ const adminController = {
     r = await userService.loginUserUtil(data);
     return r;
   },
+
+  get: async (req, res) => {
+    const data = validateInfo(validate.get, req.query);
+    r = await userService.get({ data, reqBy: req.user });
+    return r;
+  },
+
 };
 module.exports = adminController;

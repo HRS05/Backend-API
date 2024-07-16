@@ -41,7 +41,7 @@ const adminService = {
     }
 
     if (user.type != 'admin') {
-      throw new Error("Not admin" + email);
+      throw new Error("Not admin " + email);
     }
 
     const token = jwt.sign(
@@ -58,6 +58,49 @@ const adminService = {
     };
     return response;
   },
+
+  get: async ({ data, reqBy }) => {
+    const { category, page, limit, type } = data;
+
+    const currentPage = page ? page : 1;
+    const itemsPerPage = limit ? limit : 20
+
+    if (
+      isNaN(currentPage) ||
+      currentPage < 1 ||
+      isNaN(itemsPerPage) ||
+      itemsPerPage < 1
+    ) {
+      throw new Error("Invalid pagination parameters");
+    }
+
+    const skip = (currentPage - 1) * itemsPerPage;
+
+    const query = {
+      type,
+    };
+
+    if (category.length > 0) query.category = { $all: category };
+
+    const res = await userDetailsModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(itemsPerPage);
+
+    const total = await userDetailsModel.countDocuments(query);
+
+    const result = {
+      currentPage,
+      itemsPerPage,
+      total,
+      totalPages: Math.ceil(total / itemsPerPage),
+    };
+    result[type] = res;
+
+    return result;
+  },
+
 };
 
 module.exports = adminService;

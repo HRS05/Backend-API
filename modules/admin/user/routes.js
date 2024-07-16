@@ -1,10 +1,12 @@
 const express = require('express');
 const adminController = require("./controller");
 const router = express.Router();
-const execute = require('../../../middleware/executor')
+const { auth, executor, accessAllowed } = require('../../../middleware/index')
 
 
-router.post("/register", execute(adminController.registerUser));
-router.post("/login", execute(adminController.loginUser));
+router.post("/register", executor(adminController.registerUser));
+router.post("/login", executor(adminController.loginUser));
+router.get("/get", auth, accessAllowed(['admin']), executor(adminController.get));
+
 
 module.exports = router;
