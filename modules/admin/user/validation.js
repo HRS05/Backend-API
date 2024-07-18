@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { isUndefinedOrNull } = require('../../../utils/validators');
 
 const register = Joi.object({
 	name: Joi.string().required(),
@@ -15,7 +16,15 @@ const login = Joi.object({
 });
 
 const get = Joi.object({
-	category: Joi.array().items(Joi.string()).optional(),
+	category: Joi.alternatives().try(
+        Joi.array().items(Joi.string()),
+        Joi.string()
+    ).optional().custom((value, helpers) => {
+        if (!isUndefinedOrNull(value) && typeof value === 'string') {
+            return [value]; // Convert string to array of one string
+        }
+        return value; // Return the array as is
+    }, 'Convert string to array'),
     limit: Joi.number().integer().min(1).max(20).optional(), 
     page: Joi.number().integer().min(0).optional(),
     type: Joi.string().allow("user", "expert").required(),

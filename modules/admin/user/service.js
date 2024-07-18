@@ -80,7 +80,7 @@ const adminService = {
       type,
     };
 
-    if (isUndefinedOrNull(category) && category.length > 0) query.category = { $all: category };
+    if (!isUndefinedOrNull(category) && category.length > 0) query.category = { $all: category };
 
     const res = await userDetailsModel
       .find(query)
