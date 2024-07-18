@@ -15,7 +15,7 @@ const login = Joi.object({
 });
 
 const get = Joi.object({
-	category: Joi.array().items(Joi.string()).required(),
+	category: Joi.array().items(Joi.string()).optional(),
     limit: Joi.number().integer().min(1).max(20).optional(), 
     page: Joi.number().integer().min(0).optional(),
     type: Joi.string().allow("user", "expert").required(),
