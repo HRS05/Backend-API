@@ -21,5 +21,14 @@ const adminController = {
     return r;
   },
 
+  updateProfile: async (req, res) => {
+    const data = validateInfo(validate.updateProfile, { body: req.body, params: req.params });
+    r = await userService.updateProfile({
+      data,
+      files: req.files,
+    });
+    return r;
+  },
+
 };
 module.exports = adminController;

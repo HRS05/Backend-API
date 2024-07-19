@@ -19,7 +19,7 @@ const getUserBasicDetails = async (id) => {
         email: data.email,
         profileUrl: data.profileUrl
     }
-    await RedisCacheKey.setValue(getUserBasicDetailsKey(id), JSON.stringify(result));
+    await RedisCacheKey.setValueForTime(getUserBasicDetailsKey(id), JSON.stringify(result), 150000);
     return result;
 }
 

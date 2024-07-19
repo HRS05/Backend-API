@@ -15,6 +15,46 @@ const login = Joi.object({
     password: Joi.string().required(),
 });
 
+const updateProfile = Joi.object().keys({
+    params: Joi.object().keys({
+      id: Joi.string().required(),
+    }),
+    body: Joi.object().keys({
+        name: Joi.string().optional(),
+        age: Joi.number().optional(),
+        gender: Joi.string().allow("M", "F").optional(),
+        gst: Joi.string().optional(),
+        bankName: Joi.string().optional(),
+        ifscCode: Joi.string().optional(),
+        bankAccountNumber: Joi.string().optional(),
+        location: Joi.string().optional(),
+        password: Joi.string().optional(),
+        linkedinUrl: Joi.string().optional(),
+        twitterUrl: Joi.string().optional(),
+        profileUrl: Joi.string().optional(),
+        category: Joi.alternatives().try(
+            Joi.array().items(Joi.string()),
+            Joi.string()
+        ).optional().custom((value, helpers) => {
+            if (!isUndefinedOrNull(value) && typeof value === 'string') {
+                return [value];
+            }
+            return value;
+        }, 'Convert string to array'),
+        language: Joi.alternatives().try(
+            Joi.array().items(Joi.string()),
+            Joi.string()
+        ).optional().custom((value, helpers) => {
+            if (!isUndefinedOrNull(value) && typeof value === 'string') {
+                return [value];
+            }
+            return value;
+        }, 'Convert string to array'),
+        about: Joi.string().optional(),
+        experience: Joi.string().optional(),
+    }),
+  });
+
 const get = Joi.object({
 	category: Joi.alternatives().try(
         Joi.array().items(Joi.string()),
@@ -33,5 +73,6 @@ const get = Joi.object({
 module.exports = {
     register,
     login,
-    get
+    get,
+    updateProfile
 };
