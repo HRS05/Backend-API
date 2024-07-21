@@ -70,9 +70,14 @@ const get = Joi.object({
     type: Joi.string().allow("user", "expert").required(),
 });
 
+const deleteProfile = Joi.object({
+    id: Joi.string().required(),
+});
+
 module.exports = {
     register,
     login,
     get,
-    updateProfile
+    updateProfile,
+    deleteProfile
 };

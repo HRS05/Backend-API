@@ -8,6 +8,7 @@ router.post("/register", executor(adminController.registerUser));
 router.post("/login", executor(adminController.loginUser));
 router.get("/get", auth, accessAllowed(['admin']), executor(adminController.get));
 router.post("/update-profile/:id", auth, accessAllowed(['admin']), imageUpload(['image', 'image1']), executor(adminController.updateProfile));
+router.delete("/delete-profile/:id", auth, accessAllowed(['admin']), executor(adminController.deleteProfile));
 
 
 module.exports = router;

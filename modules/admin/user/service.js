@@ -81,6 +81,7 @@ const adminService = {
 
     const query = {
       type,
+      $nin : ['deleted']
     };
 
     if (!isUndefinedOrNull(category) && category.length > 0) query.category = { $all: category };
@@ -167,6 +168,22 @@ const adminService = {
     // await cache.deleteUserBasicDetails(params.id);
 
     return { result: `${person.type} updated successfully.` };
+  },
+
+  deleteProfile: async ({ data, reqBy}) => {
+    const { id } = data;
+    const user = await userDetailsModel.findById(id);
+
+    if (isUndefinedOrNull(user)) {
+      throw new Error("Invalid User " + id);
+    }
+
+    const x = await userDetailsModel.updateOne(
+      { _id: id },
+      { status: 'deleted' }
+    );
+
+    return { result: `${user.type} deleted successfully.` };
   },
 
 };

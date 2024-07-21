@@ -30,5 +30,11 @@ const adminController = {
     return r;
   },
 
+  deleteProfile: async (req, res) => {
+    const data = validateInfo(validate.deleteProfile,  req.params );
+    r = await userService.deleteProfile({ data, reqBy: req.user });
+    return r;
+  },
+
 };
 module.exports = adminController;

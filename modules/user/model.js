@@ -28,6 +28,7 @@ var userSchema = new mongoose.Schema(
     linkedinUrl: String,
     twitterUrl: String,
     bankName: String,
+    status: String,
     ifscCode: String,
     bankAccountNumber: String,
     location: String,

@@ -232,6 +232,7 @@ const userService = {
 
     const query = {
       type: TYPE.EXPERT,
+      $nin : ['deleted']
     };
 
     if (category.length > 0) query.category = { $all: category };
