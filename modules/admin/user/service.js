@@ -81,7 +81,7 @@ const adminService = {
 
     const query = {
       type,
-      $nin : ['deleted']
+      status : { $nin : ['deleted'] }
     };
 
     if (!isUndefinedOrNull(category) && category.length > 0) query.category = { $all: category };
